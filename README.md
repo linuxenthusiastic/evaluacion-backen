@@ -181,3 +181,12 @@ Eso es SOLID aplicado desde el primer modelo.
 El seed data genera sesiones con `ends_at` null porque el campo es nullable.
 En producción `ends_at` debería ser obligatorio — una sesión sin hora de
 fin no tiene sentido en un sistema de conferencias real.
+
+
+## Examen 
+Que se agrego?
+
+se agrego _parse_dt por que ? necesitamos el valor de la fecha a UTC lo necesitamos por que de la db viene datetime pero cuando lo metemos a redis es string en los 2 casos paso por la sgt funcion compute_relative_time y esto por que? esta funcion calcula el estado actual si empezo si acabo si todavia no empezo devuelve los minutos lo hace comparando el now con el end depues tenemos inject_time basicamente recorre las lista de resultados y injecta el relative_time sin el no veriamos el relative_time 
+build result se encarga de juntar los resultados y meterlos en un array para que ? para el SQLAlchemy 
+
+todo esto es enviado a nuestra ruta today la cual recibe la tz y llama las funciones al final es una copia de la ruta principal / pero inyecta los result en el cache buildea y envia el response
