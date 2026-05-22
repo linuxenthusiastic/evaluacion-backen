@@ -30,6 +30,7 @@ class Track(models.Model):
     )
     created      = models.DateTimeField(auto_now_add=True)
     modified     = models.DateTimeField(auto_now=True)
+    color = models.CharField(max_length=7, default='#6366f1') 
 
     class Meta:
         db_table = '"content"."track"'
@@ -44,6 +45,7 @@ class Speaker(models.Model):
     bio      = models.TextField(blank=True)
     created  = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    affiliation = models.CharField(max_length=255, blank=True, default='')
 
     class Meta:
         db_table = '"content"."speaker"'
@@ -70,7 +72,7 @@ class Session(models.Model):
     )
     created  = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-
+    ends_at = models.DateTimeField(null=True, blank=True)
     class Meta:
         db_table = '"content"."session"'
         ordering = ['starts_at']
