@@ -29,7 +29,7 @@ class Track(Base):
     conference_id = Column(UUID(as_uuid=True), ForeignKey('content.conference.id'), nullable=False)
     created       = Column(DateTime(timezone=True))
     modified      = Column(DateTime(timezone=True))
-
+    color         = Column(String(7), default='#6366f1')
     conference = relationship('Conference', back_populates='tracks')
     sessions   = relationship('Session', back_populates='track')
 
@@ -43,7 +43,7 @@ class Speaker(Base):
     bio      = Column(Text, default='')
     created  = Column(DateTime(timezone=True))
     modified = Column(DateTime(timezone=True))
-
+    affiliation = Column(String(255), default='')
     sessions = relationship('Session', secondary='content.session_speaker', back_populates='speakers')
 
 
@@ -59,7 +59,7 @@ class Session(Base):
     track_id    = Column(UUID(as_uuid=True), ForeignKey('content.track.id'), nullable=False)
     created     = Column(DateTime(timezone=True))
     modified    = Column(DateTime(timezone=True))
-
+    ends_at = Column(DateTime(timezone=True), nullable=True)
     track    = relationship('Track', back_populates='sessions')
     speakers = relationship('Speaker', secondary='content.session_speaker', back_populates='sessions')
     registrations = relationship('Registration', back_populates='session')
