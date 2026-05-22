@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from uuid import UUID
 from datetime import datetime
 
@@ -20,6 +20,7 @@ class TrackSchema(BaseModel):
     conference: ConferenceSchema
     created: datetime
     modified: datetime
+    color: str
 
     class Config:
         from_attributes = True
@@ -30,30 +31,37 @@ class SpeakersSchema(BaseModel):
     bio: str
     created: datetime
     modified: datetime
+    affiliation: str
 
     class Config:
         from_attributes = True
 class SessionListSchema(BaseModel):
     id: UUID
     title: str
-    starts_at: datetime
+    starts_at: datetime 
+    ends_at: datetime | None = None
     capacity: int
+    registered: int = 0
+
     class Config:
         from_attributes = True
 
 class SessionSchema(BaseModel):
     id: UUID
     title: str
-    description: str
+    abstract: str = Field(alias='description')
     starts_at: datetime
     capacity: int
     track: TrackSchema
     speakers: list[SpeakersSchema] = []
     created: datetime
     modified: datetime
+    ends_at: datetime | None = None
+    registered: int = 0
 
     class Config:
         from_attributes = True
+        populate_by_name = True
 
 class UserSchema(BaseModel):
     id: int
