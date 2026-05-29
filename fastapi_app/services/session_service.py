@@ -9,7 +9,7 @@ class SessionService:
     def __init__(self, repository: SessionRepository):
         self.repository = repository
 
-    def get_all_filtered(self, db: Session, q=None, track=None, day=None, skip=0, limit=12):
+    def get_all_filtered(self, db: Session, q=None, track=None, day=None, tz=None, skip=0, limit=12):
         return self.repository.get_all_filtered(db, q=q, track=track, day=day, skip=skip, limit=limit)
 
     def get_by_id(self, db: Session, id: UUID):
