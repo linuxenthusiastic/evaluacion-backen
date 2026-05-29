@@ -4,9 +4,10 @@ from uuid import UUID
 from models import Session as SessionModel, Registration as RegistrationModel
 from datetime import datetime
 import pytz
+from repositories.base import BaseRepository
 
 
-class SessionRepository:
+class SessionRepository(BaseRepository):
 
     def get_all_filtered(self, db: Session, q=None, track=None, day=None, skip=0, limit=12):
         query = db.query(SessionModel).options(

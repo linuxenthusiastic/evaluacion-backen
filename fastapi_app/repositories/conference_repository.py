@@ -2,9 +2,9 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from uuid import UUID
 from models import Conference as ConferenceModel
+from repositories.base import BaseRepository
 
-
-class ConferenceRepository:
+class ConferenceRepository(BaseRepository):
 
     def get_all(self, db: Session, skip: int = 0, limit: int = 20):
         return (
