@@ -2,10 +2,20 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 from main import app
+from database import get_db
 from uuid import uuid4
 from datetime import datetime
 
 client = TestClient(app)
+
+
+def override_get_db():
+    db = MagicMock()
+    db.execute.return_value = True
+    yield db
+
+app.dependency_overrides[get_db] = override_get_db
+
 
 def make_session():
     session = MagicMock()
@@ -13,13 +23,17 @@ def make_session():
     session.title       = "Intro a Python"
     session.description = "Una charla genial"
     session.starts_at   = datetime.now()
+    session.ends_at     = datetime.now()
     session.capacity    = 50
+    session.registered  = 0
+    session.registrations = []
     session.created     = datetime.now()
     session.modified    = datetime.now()
     session.speakers    = []
     track = MagicMock()
-    track.id   = uuid4()
-    track.name = "Backend"
+    track.id    = uuid4()
+    track.name  = "Backend"
+    track.color = "#6366f1"
     track.created  = datetime.now()
     track.modified = datetime.now()
     conference = MagicMock()
@@ -36,8 +50,7 @@ def make_session():
 
 
 def test_health():
-    # El endpoint /healthz tiene que devolver 200
-    response = client.get("/healthz")
+    response = client.get("/api/v1/healthz")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
 
@@ -46,7 +59,7 @@ def test_list_sessions_returns_200():
     with patch('routers.sessions.get_service') as mock_service, \
          patch('routers.sessions.cache_get', return_value=None), \
          patch('routers.sessions.cache_set'):
-        mock_service.return_value.get_all.return_value = [make_session()]
+        mock_service.return_value.get_all_filtered.return_value = ([make_session()], 1)
         response = client.get("/api/v1/sessions/")
         assert response.status_code == 200
 
@@ -75,7 +88,7 @@ def test_availability_not_found():
 
 
 def test_cache_hit_returns_cached_data():
-    cached = [{"id": str(uuid4()), "title": "cached", "starts_at": str(datetime.now()), "capacity": 10}]
+    cached = {"count": 1, "page": 1, "results": [{"id": str(uuid4()), "title": "cached", "starts_at": str(datetime.now()), "ends_at": None, "capacity": 10, "registered": 0}]}
     with patch('routers.sessions.cache_get', return_value=cached):
         response = client.get("/api/v1/sessions/")
         assert response.status_code == 200
