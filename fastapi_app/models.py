@@ -72,9 +72,11 @@ class SessionSpeaker(Base):
         {'schema': 'content'}
     )
 
-    session_id = Column(UUID(as_uuid=True), ForeignKey('content.session.id'), primary_key=True)
-    speaker_id = Column(UUID(as_uuid=True), ForeignKey('content.speaker.id'), primary_key=True)
-
+    id         = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    session_id = Column(UUID(as_uuid=True), ForeignKey('content.session.id'))
+    speaker_id = Column(UUID(as_uuid=True), ForeignKey('content.speaker.id'))
+    created    = Column(DateTime(timezone=True))
+    modified   = Column(DateTime(timezone=True))
 
 class Registration(Base):
     __tablename__ = 'registration'

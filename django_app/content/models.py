@@ -23,6 +23,7 @@ class Conference(models.Model):
 class Track(models.Model):
     id           = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name         = models.CharField(max_length=255)
+    color        = models.CharField(max_length=7, default='#6366f1')
     conference   = models.ForeignKey(
         Conference,
         on_delete=models.CASCADE,
@@ -30,7 +31,6 @@ class Track(models.Model):
     )
     created      = models.DateTimeField(auto_now_add=True)
     modified     = models.DateTimeField(auto_now=True)
-    color = models.CharField(max_length=7, default='#6366f1') 
 
     class Meta:
         db_table = '"content"."track"'
@@ -40,12 +40,12 @@ class Track(models.Model):
 
 
 class Speaker(models.Model):
-    id       = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name     = models.CharField(max_length=255)
-    bio      = models.TextField(blank=True)
-    created  = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+    id          = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name        = models.CharField(max_length=255)
+    bio         = models.TextField(blank=True)
     affiliation = models.CharField(max_length=255, blank=True, default='')
+    created     = models.DateTimeField(auto_now_add=True)
+    modified    = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = '"content"."speaker"'
@@ -55,24 +55,25 @@ class Speaker(models.Model):
 
 
 class Session(models.Model):
-    id       = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title    = models.CharField(max_length=255)
+    id          = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title       = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     starts_at   = models.DateTimeField()
+    ends_at     = models.DateTimeField(null=True, blank=True)
     capacity    = models.PositiveIntegerField(default=0)
-    track    = models.ForeignKey(
+    track       = models.ForeignKey(
         Track,
         on_delete=models.CASCADE,
         related_name='sessions'
     )
-    speakers = models.ManyToManyField(
+    speakers    = models.ManyToManyField(
         Speaker,
         through='SessionSpeaker',
         related_name='sessions'
     )
-    created  = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-    ends_at = models.DateTimeField(null=True, blank=True)
+    created     = models.DateTimeField(auto_now_add=True)
+    modified    = models.DateTimeField(auto_now=True)
+
     class Meta:
         db_table = '"content"."session"'
         ordering = ['starts_at']
@@ -82,8 +83,11 @@ class Session(models.Model):
 
 
 class SessionSpeaker(models.Model):
+    id       = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     session  = models.ForeignKey(Session, on_delete=models.CASCADE)
     speaker  = models.ForeignKey(Speaker, on_delete=models.CASCADE)
+    created  = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = '"content"."session_speaker"'
