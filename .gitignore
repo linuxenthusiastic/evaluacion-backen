@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Entorno — CRÍTICO: nunca subas el .env real
+.env
+# .env.example SÍ va al repo
+
+# Django
+staticfiles/
+mediafiles/
+*.sqlite3
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Docker
+.docker/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
